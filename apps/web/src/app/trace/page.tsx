@@ -5,7 +5,7 @@ import { useTrace } from "@/hooks/useTrace";
 import { ExecutionTimeline } from "@/components/trace/ExecutionTimeline";
 import { StateDiffViewer } from "@/components/trace/StateDiffViewer";
 import { ResourceProfile } from "@/components/trace/ResourceProfile";
-import LoadingSpinner from "@/components/shared/LoadingSpinner";
+import { ReplayProgressBar } from "@/components/trace/ReplayProgressBar";
 
 export default function TracePage() {
   const [txHash, setTxHash] = useState("");
@@ -16,7 +16,7 @@ export default function TracePage() {
       ? `ws://${window.location.hostname}:8080`
       : "";
 
-  const { trace, loading, requestTrace, streaming, streamError } =
+  const { trace, loading, progress, requestTrace, cancelTrace, streaming, streamError } =
     useTrace(wsUrl);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -64,7 +64,7 @@ export default function TracePage() {
         <button
           type="submit"
           disabled={loading || !txHash}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
         >
           {loading ? "Tracing..." : "Trace Transaction"}
         </button>
@@ -82,14 +82,16 @@ export default function TracePage() {
         )}
       </form>
 
-      {loading && (
-        <div className="flex items-center justify-center py-12">
-          <LoadingSpinner />
-          <span className="ml-3 text-gray-600">
-            {trace?.nodes.length
-              ? `Processing trace nodes (${trace.nodes.length} received)...`
-              : "Reconstructing state and starting replay..."}
-          </span>
+      {/* Multi-step progress indicator */}
+      {(loading || progress.phase === "complete" || progress.phase === "error") && (
+        <div className="mb-8">
+          <ReplayProgressBar progress={progress} onCancel={cancelTrace} />
+        </div>
+      )}
+
+      {progress.phase === "cancelled" && (
+        <div className="mb-8 p-4 rounded-xl border border-yellow-700/50 bg-yellow-950/30 text-yellow-400 text-sm">
+          Replay was cancelled. Enter a transaction hash and try again.
         </div>
       )}
 

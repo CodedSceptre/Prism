@@ -22,3 +22,6 @@ export { default as ComparisonView } from "./debug/ComparisonView";
 export { default as JsonTreeView } from "./shared/JsonTreeView";
 export { default as XdrViewer } from "./shared/XdrViewer";
 export { default as LoadingSpinner } from "./shared/LoadingSpinner";
+export { default as OnboardingTour, triggerTourReplay } from "./shared/OnboardingTour";
+
+export { ReplayProgressBar } from "./trace/ReplayProgressBar";
