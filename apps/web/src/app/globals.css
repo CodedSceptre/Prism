@@ -1,1 +1,76 @@
 @import "tailwindcss";
+
+/*
+ * Focus-visible styles for keyboard navigation accessibility.
+ * Uses :focus-visible to show focus rings only for keyboard users,
+ * not for mouse/touch interactions.
+ */
+
+/* Remove default outline and apply custom focus-visible ring */
+*:focus {
+  outline: none;
+}
+
+/* Visible focus ring for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid #7c3aed; /* violet-600 */
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Buttons */
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid #7c3aed;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Links */
+a:focus-visible {
+  outline: 2px solid #7c3aed;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Inputs, selects, textareas */
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #7c3aed;
+  outline-offset: 0px;
+  border-radius: 6px;
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.15);
+}
+
+/* Checkboxes and radios */
+input[type="checkbox"]:focus-visible,
+input[type="radio"]:focus-visible {
+  outline: 2px solid #7c3aed;
+  outline-offset: 2px;
+}
+
+/* Skip-to-content link for screen reader / keyboard users */
+.skip-to-content {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.skip-to-content:focus-visible {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: auto;
+  height: auto;
+  padding: 0.5rem 1rem;
+  background: #7c3aed;
+  color: #fff;
+  font-weight: 600;
+  z-index: 9999;
+  border-radius: 0 0 6px 0;
+  outline: none;
+}
