@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prism-server
+  labels:
+    app: prism-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prism-server
+  template:
+    metadata:
+      labels:
+        app: prism-server
+    spec:
+      containers:
+        - name: server
+          image: prism-server:latest
+          ports:
+            - containerPort: 3001
+          env:
+            - name: PORT
+              value: "3001"
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: prism-secrets
+                  key: redis-url
+          livenessProbe:
+            httpGet:
+              path: /v1/health/live
+              port: 3001
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /v1/health/ready
+              port: 3001
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
